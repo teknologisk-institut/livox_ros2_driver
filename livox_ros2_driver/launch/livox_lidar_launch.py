@@ -1,8 +1,9 @@
 import os
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch_ros.actions import Node
-import launch
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration, NotEqualsSubstitution
+from launch_ros.actions import Node, SetRemap
+from launch.conditions import IfCondition
 
 ################### user configure parameters for ros2 start ###################
 xfer_format   = 0    # 0-Pointcloud2(PointXYZRTL), 1-customized pointcloud format
@@ -33,6 +34,27 @@ livox_ros2_params = [
 ]
 
 def generate_launch_description():
+      
+    lidar_topic_arg = DeclareLaunchArgument(
+              'lidar_topic',
+              default_value="",
+              description="Remap lidar topic to supplied topic."
+    )
+    lidar_topic = LaunchConfiguration('lidar_topic')
+
+    lidar_remap = SetRemap('/livox/lidar', lidar_topic, condition=IfCondition(NotEqualsSubstitution(lidar_topic,"")))
+
+
+    imu_topic_arg = DeclareLaunchArgument(
+              'imu_topic',
+              default_value="",
+              description="Remap topic to this."
+    )
+    imu_topic = LaunchConfiguration('imu_topic')
+
+    imu_remap = SetRemap('/livox/imu', imu_topic, condition=IfCondition(NotEqualsSubstitution(imu_topic,"")))
+
+
     livox_driver = Node(
         package='livox_ros2_driver',
         executable='livox_ros2_driver_node',
@@ -42,5 +64,9 @@ def generate_launch_description():
         )
 
     return LaunchDescription([
+        lidar_topic_arg,
+        lidar_remap,
+        imu_topic_arg,
+        imu_remap,
         livox_driver
     ])
