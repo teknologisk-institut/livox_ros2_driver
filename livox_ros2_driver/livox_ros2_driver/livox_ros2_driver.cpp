@@ -84,6 +84,9 @@ LivoxDriver::LivoxDriver(const rclcpp::NodeOptions & node_options)
   double publish_freq = 10.0; /* Hz */
   int output_type = kOutputToRos;
   std::string frame_id;
+  std::string imu_frame_id;
+  std::string topic_lidar;
+  std::string topic_imu;
 
   this->declare_parameter("xfer_format", xfer_format);
   this->declare_parameter("multi_topic", 0);
@@ -91,9 +94,12 @@ LivoxDriver::LivoxDriver(const rclcpp::NodeOptions & node_options)
   this->declare_parameter("publish_freq", 10.0);
   this->declare_parameter("output_data_type", output_type);
   this->declare_parameter("frame_id", "frame_default");
+  this->declare_parameter("imu_frame_id", "frame_default");
   this->declare_parameter("user_config_path", "path_default");
   this->declare_parameter("cmdline_input_bd_code", "000000000000001");
   this->declare_parameter("lvx_file_path", "/home/livox/livox_test.lvx");
+  this->declare_parameter("topic_lidar", "/livox/lidar");
+  this->declare_parameter("topic_imu", "/livox/imu");
 
   this->get_parameter("xfer_format", xfer_format);
   this->get_parameter("multi_topic", multi_topic);
@@ -101,6 +107,10 @@ LivoxDriver::LivoxDriver(const rclcpp::NodeOptions & node_options)
   this->get_parameter("publish_freq", publish_freq);
   this->get_parameter("output_data_type", output_type);
   this->get_parameter("frame_id", frame_id);
+  this->get_parameter("imu_frame_id", imu_frame_id);
+  this->get_parameter("topic_lidar", topic_lidar);
+  this->get_parameter("topic_imu", topic_imu);
+
   if (publish_freq > 100.0) {
     publish_freq = 100.0;
   } else if (publish_freq < 0.1) {
@@ -113,7 +123,7 @@ LivoxDriver::LivoxDriver(const rclcpp::NodeOptions & node_options)
 
   /** Lidar data distribute control and lidar data source set */
   lddc_ptr_ =
-    std::make_unique<Lddc>(xfer_format, multi_topic, data_src, output_type, publish_freq, frame_id);
+    std::make_unique<Lddc>(xfer_format, multi_topic, data_src, output_type, publish_freq, frame_id, imu_frame_id, topic_lidar, topic_imu);
   lddc_ptr_->SetRosNode(this);
 
   int ret = 0;

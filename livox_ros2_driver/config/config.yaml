@@ -1,0 +1,14 @@
+livox_lidar_publisher:
+  ros__parameters:
+    xfer_format: 0
+    multi_topic: 0
+    data_src: 0
+    publish_freq: 10.0
+    output_data_type: 0
+    frame_id: "lixox_lidar_frame"
+    imu_frame_id: "livox_imu_frame"
+    user_config_path: "$(find-pkg-share livox_ros2_driver)/config/livox_lidar_config.json"
+    cmdline_input_bd_code: "000000000000001"
+    lvx_file_path: "/home/livox/livox_test.lvx"
+    topic_lidar: "/livox/lidar"
+    topic_imu: "/livox/imu"
