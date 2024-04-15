@@ -2,6 +2,7 @@
 * Added config yaml file and updated livox_lidar_launch script to use it.
 * Added possibility to set imu_frame_id, lidar_topic and imu_topic.
 * Changed to use master branch from own forked version of Livox-SDK(1)
+* Changed so both PointCloud2Msg and LivoxCustomMsg is published. Transforformat has no effect, so can't change whats being published.
 
 # Livox ROS2 Driver([览沃ROS2驱动程序中文说明](https://github.com/Livox-SDK/livox_ros2_driver/blob/master/README_CN.md))
 
