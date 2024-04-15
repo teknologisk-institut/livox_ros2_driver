@@ -54,6 +54,8 @@ typedef enum {
   kLivoxImuMsg = 3,
 } MessageTypeOfTransfer;
 
+using MessageHandlers = std::unordered_map<uint8_t,std::shared_ptr<rclcpp::PublisherBase>>;
+
 class Lddc {
  public:
   Lddc(int format, int multi_topic, int data_src, int output_type, double frq,
@@ -76,18 +78,16 @@ class Lddc {
   int32_t GetPublishStartTime(LidarDevice *lidar, LidarDataQueue *queue,
                               uint64_t *start_time,
                               StoragePacket *storage_packet);
-  uint32_t PublishPointcloud2(LidarDataQueue *queue, uint32_t packet_num,
-                              uint8_t handle);
+  void PublishPointcloud2(const sensor_msgs::msg::PointCloud2& pointCloud2_msg, uint8_t handle);
   uint32_t PublishPointcloudData(LidarDataQueue *queue, uint32_t packet_num,
                                  uint8_t handle);
-  uint32_t PublishCustomPointcloud(LidarDataQueue *queue, uint32_t packet_num,
-                                   uint8_t handle);
+  void PublishCustomPointcloud(const livox_interfaces::msg::CustomMsg& livox_msg, uint8_t handle);
   uint32_t PublishImuData(LidarDataQueue *queue, uint32_t packet_num,
                           uint8_t handle);
 
   std::shared_ptr<rclcpp::PublisherBase> CreatePublisher(uint8_t msg_type,
     std::string &topic_name, uint32_t queue_size);
-  std::shared_ptr<rclcpp::PublisherBase> GetCurrentPublisher(uint8_t handle);
+  std::shared_ptr<rclcpp::PublisherBase> GetCurrentPublisher(uint8_t handle,uint8_t transfer_format);
   std::shared_ptr<rclcpp::PublisherBase> GetCurrentImuPublisher(uint8_t handle);
   void PollingLidarPointCloudData(uint8_t handle, LidarDevice *lidar);
   void PollingLidarImuData(uint8_t handle, LidarDevice *lidar);
@@ -109,10 +109,10 @@ class Lddc {
   std::string topic_imu_;
 
 
-  std::shared_ptr<rclcpp::PublisherBase>private_pub_[kMaxSourceLidar];
-  std::shared_ptr<rclcpp::PublisherBase>global_pub_;
-  std::shared_ptr<rclcpp::PublisherBase>private_imu_pub_[kMaxSourceLidar];
-  std::shared_ptr<rclcpp::PublisherBase>global_imu_pub_;
+  MessageHandlers private_pub_[kMaxSourceLidar];
+  MessageHandlers global_pub_;
+  std::shared_ptr<rclcpp::PublisherBase> private_imu_pub_[kMaxSourceLidar];
+  std::shared_ptr<rclcpp::PublisherBase> global_imu_pub_;
   rclcpp::Node* cur_node_;
   // rclcpp::rosbag::Bag *bag_;
 };
