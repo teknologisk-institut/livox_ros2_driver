@@ -42,8 +42,8 @@
 #include "lds_lidar.h"
 #include "lds_lvx.h"
 #include "livox_sdk.h"
-#include "livox_interfaces/msg/custom_point.h"
-#include "livox_interfaces/msg/custom_msg.h"
+#include "livox_ros_driver2/msg/custom_point.h"
+#include "livox_ros_driver2/msg/custom_msg.h"
 
 namespace
 {

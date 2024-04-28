@@ -32,8 +32,8 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/msg/imu.hpp>
-#include "livox_interfaces/msg/custom_point.hpp"
-#include "livox_interfaces/msg/custom_msg.hpp"
+#include "livox_ros_driver2/msg/custom_point.hpp"
+#include "livox_ros_driver2/msg/custom_msg.hpp"
 
 #include "lds_lidar.h"
 #include "lds_lvx.h"
@@ -261,12 +261,12 @@ uint32_t Lddc::PublishPointcloudData(LidarDataQueue *queue, uint32_t packet_num,
   return published_packet;
 }
 
-void Lddc::FillPointsToCustomMsg(livox_interfaces::msg::CustomMsg& livox_msg, \
+void Lddc::FillPointsToCustomMsg(livox_ros_driver2::msg::CustomMsg& livox_msg, \
     LivoxPointXyzrtl* src_point, uint32_t num, uint32_t offset_time, \
     uint32_t point_interval, uint32_t echo_num) {
   LivoxPointXyzrtl* point_xyzrtl = (LivoxPointXyzrtl*)src_point;
   for (uint32_t i = 0; i < num; i++) {
-    livox_interfaces::msg::CustomPoint point;
+    livox_ros_driver2::msg::CustomPoint point;
     if (echo_num > 1) { /** dual return mode */
       point.offset_time = offset_time + (i / echo_num) * point_interval;
     } else {
@@ -283,10 +283,10 @@ void Lddc::FillPointsToCustomMsg(livox_interfaces::msg::CustomMsg& livox_msg, \
   }
 }
 
-void Lddc::PublishCustomPointcloud(const livox_interfaces::msg::CustomMsg& livox_msg, uint8_t handle) {
-  rclcpp::Publisher<livox_interfaces::msg::CustomMsg>::SharedPtr publisher =
+void Lddc::PublishCustomPointcloud(const livox_ros_driver2::msg::CustomMsg& livox_msg, uint8_t handle) {
+  rclcpp::Publisher<livox_ros_driver2::msg::CustomMsg>::SharedPtr publisher =
       std::dynamic_pointer_cast<rclcpp::Publisher
-      <livox_interfaces::msg::CustomMsg>>(GetCurrentPublisher(handle, kLivoxCustomMsg));  
+      <livox_ros_driver2::msg::CustomMsg>>(GetCurrentPublisher(handle, kLivoxCustomMsg));  
   if (kOutputToRos == output_type_) {
     publisher->publish(livox_msg);
   } else {
@@ -389,7 +389,7 @@ void Lddc::PollingLidarPointCloudData(uint8_t handle, LidarDevice *lidar) {
     cloud.point_step = sizeof(LivoxPointXyzrtl);
 
     // Custom point cloud
-    livox_interfaces::msg::CustomMsg livox_msg;
+    livox_ros_driver2::msg::CustomMsg livox_msg;
     livox_msg.header.frame_id.assign(frame_id_);
     livox_msg.timebase = 0;
     livox_msg.point_num = 0;
@@ -533,7 +533,7 @@ std::shared_ptr<rclcpp::PublisherBase> Lddc::CreatePublisher(uint8_t msg_type,
       RCLCPP_INFO(cur_node_->get_logger(),
           "%s publish use livox custom format", topic_name.c_str());
       return cur_node_->create_publisher<
-          livox_interfaces::msg::CustomMsg>(topic_name + "_custom", queue_size);
+          livox_ros_driver2::msg::CustomMsg>(topic_name + "_custom", queue_size);
     }
 #if 0
     else if (kPclPxyziMsg == msg_type)  {

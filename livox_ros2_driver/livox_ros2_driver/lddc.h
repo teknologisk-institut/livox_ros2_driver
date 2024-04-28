@@ -33,8 +33,8 @@
 #include <pcl_conversions/pcl_conversions.h>
 #include <sensor_msgs/msg/point_cloud2.hpp>
 #include <sensor_msgs/msg/imu.hpp>
-#include "livox_interfaces/msg/custom_point.hpp"
-#include "livox_interfaces/msg/custom_msg.hpp"
+#include "livox_ros_driver2/msg/custom_point.hpp"
+#include "livox_ros_driver2/msg/custom_msg.hpp"
 
 namespace livox_ros {
 
@@ -81,7 +81,7 @@ class Lddc {
   void PublishPointcloud2(const sensor_msgs::msg::PointCloud2& pointCloud2_msg, uint8_t handle);
   uint32_t PublishPointcloudData(LidarDataQueue *queue, uint32_t packet_num,
                                  uint8_t handle);
-  void PublishCustomPointcloud(const livox_interfaces::msg::CustomMsg& livox_msg, uint8_t handle);
+  void PublishCustomPointcloud(const livox_ros_driver2::msg::CustomMsg& livox_msg, uint8_t handle);
   uint32_t PublishImuData(LidarDataQueue *queue, uint32_t packet_num,
                           uint8_t handle);
 
@@ -94,7 +94,7 @@ class Lddc {
   void InitPointcloud2MsgHeader(sensor_msgs::msg::PointCloud2& cloud);
   void FillPointsToPclMsg(PointCloud& pcl_msg,
       LivoxPointXyzrtl* src_point, uint32_t num);
-  void FillPointsToCustomMsg(livox_interfaces::msg::CustomMsg& livox_msg,
+  void FillPointsToCustomMsg(livox_ros_driver2::msg::CustomMsg& livox_msg,
       LivoxPointXyzrtl* src_point, uint32_t num, uint32_t offset_time,
       uint32_t point_interval, uint32_t echo_num);
   uint8_t transfer_format_;
